@@ -17,9 +17,17 @@ df = data_senate.copy()
 state_data = {}
 for column in df.columns:
     if 'votes_yea_' in column or 'votes_nay_' in column:
-        parts = column.split('_')
-        vote_type = parts[1]
-        state_abbr = parts[2]
+
+        if 'bill_votes_yea' in column or 'bill_votes_nay' in column:
+            parts = column.split('_')
+            vote_type = parts[2]
+            state_abbr = parts[3]
+
+        else:
+
+            parts = column.split('_')
+            vote_type = parts[1]
+            state_abbr = parts[2]
 
         total_votes = df[column].sum()
 
@@ -51,9 +59,11 @@ state_df['for_legislation_percent'] = (state_df['yea_votes']/(state_df['yea_vote
 # convert nan values to 0
 state_df.fillna(0, inplace=True)
 
+sttate_df_wo_total = state_df[state_df['state'] != 'total']
+
 # Plotting the choropleth map with enhanced interactivity and tooltips using Plotly
 fig = px.choropleth(
-    state_df,
+    sttate_df_wo_total,
     locations='state',
     locationmode='USA-states',
     color='yea_minus_nay',
@@ -64,6 +74,7 @@ fig = px.choropleth(
     #range_color=[-100, 100],
     hover_name='state',
     template='plotly_dark',
+    #width=800,  # Set the width of the map (in pixels)
     hover_data={
         #'yea_votes': True,
         #'nay_votes': True,
@@ -155,12 +166,23 @@ def forecast (monthly_data, dependent_variable):
 
 def display_state_voting_trend(clicked_state):
     
-    columns_to_check = [
-        f'votes_yea_{clicked_state}_democrat',
-        f'votes_nay_{clicked_state}_democrat',
-        f'votes_yea_{clicked_state}_republican',
-        f'votes_nay_{clicked_state}_republican'
-    ]
+    if clicked_state == 'total' :
+
+        clicked_state = clicked_state.lower()
+        columns_to_check = [
+            f'bill_votes_yea_{clicked_state}_democrat',
+            f'bill_votes_nay_{clicked_state}_democrat',
+            f'bill_votes_yea_{clicked_state}_republican',
+            f'bill_votes_nay_{clicked_state}_republican'
+        ]
+
+    else :
+        columns_to_check = [
+            f'votes_yea_{clicked_state}_democrat',
+            f'votes_nay_{clicked_state}_democrat',
+            f'votes_yea_{clicked_state}_republican',
+            f'votes_nay_{clicked_state}_republican'
+        ]
 
     data_senate_state = data_senate[['month'] + columns_to_check]
 
@@ -178,8 +200,14 @@ def display_state_voting_trend(clicked_state):
         y=['yea_minus_nay_democrat', 'yea_minus_nay_republican'],
         title=f'Senate Voting Trend (Yea vs. Nay) in {clicked_state} by Party',
         labels={'value': 'Yea - Nay Votes Difference', 'variable': 'Party'},
-        line_shape='spline'
+        line_shape='linear',
+        #line_shape_sequence=['linear', 'spline', 'vhv', 'hvh', 'vh', 'hv'],
+        template='plotly_dark'
     )
+
+    # increase the size of the chart
+    fig_time_series.update_layout(width=800, height=500)
+    fig_time_series.update_xaxes(title_text='Month')
 
     st.plotly_chart(fig_time_series)
 
@@ -202,6 +230,7 @@ def display_state_voting_trend(clicked_state):
         line_shape='spline'
     )
 
+    fig_forecast.update_xaxes(title_text='Month')
     st.plotly_chart(fig_forecast)
 
     # Plot the forecasted values using Plotly line chart
@@ -214,11 +243,15 @@ def display_state_voting_trend(clicked_state):
         line_shape='spline'
     )
 
+    fig_forecast.update_xaxes(title_text='Month')
     st.plotly_chart(fig_forecast)
 
-    # Diplay bar chart for party-wise votes
-
-    details = state_df[state_df['state'] == clicked_state].iloc[0]
+    # Display bar chart for party-wise votes
+    if clicked_state == 'total' :
+        details = state_df[state_df['state'] == 'total'].iloc[0]
+    else:
+        details = state_df[state_df['state'] == clicked_state].iloc[0]
+    
     party_votes = pd.DataFrame({
         'Party': ['Democrat', 'Republican'],
         'Yea Votes': [details['democrat_yea'], details['republican_yea']],
@@ -231,22 +264,28 @@ def display_state_voting_trend(clicked_state):
         y=['Yea Votes', 'Nay Votes'],
         title=f'Party-wise Votes in {clicked_state}',
         labels={'value': 'Votes', 'variable': 'Vote Type'},
-        barmode='group'
+        barmode='group',
+        template='plotly_dark'
     )
 
+    fig_party_votes.update_xaxes(title_text='Party')
     st.plotly_chart(fig_party_votes)
 
 
 # Ensure state_dr['state'] does not contain 'yea', 'nay', 'total' values
-state_df = state_df[~state_df['state'].str.contains('yea|nay|total', case=False)]
+state_df = state_df[~state_df['state'].str.contains('yea|nay', case=False)]
 
 # Get the state clicked by the user
-click_data = st.selectbox('Select a State', state_df['state'].unique())
+state_list = state_df['state'].unique()
+# convert state_list to upper case
+state_list = [state.upper() for state in state_list]
+click_data = st.selectbox('Select a State', state_list)
 
 if click_data:
 
-    selected_state = click_data
+    if click_data == 'TOTAL':
+        selected_state = 'total'
+    else:
+        selected_state = click_data
     st.write(f"Selected State: {selected_state}")
     display_state_voting_trend(selected_state)
-    
-   
