@@ -145,6 +145,7 @@ fig_party_vote_share.update_layout(
     width=800,  # Set the width of the map (in pixels)
     height=600,  # Set the height of the map (in pixels)
 )
+fig.show(debug=True)
 
 # Display the choropleth map
 st.plotly_chart(fig_party_vote_share)
