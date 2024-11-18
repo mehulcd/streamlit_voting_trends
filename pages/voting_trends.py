@@ -5,7 +5,7 @@ from prophet import Prophet
 #import time_series_model
 
 # Load your dataset
-data = pd.read_csv("congress_voting_data_flattened.csv")
+data = pd.read_csv("data/congress_voting_data_flattened.csv")
 data['bill_introduced_date'] = pd.to_datetime(data['bill_introduced_date'], utc=True, format = 'mixed').dt.tz_localize(None)
 #df['bill_introduced_date'].dt.to_period('M')
 data['month'] = data['bill_introduced_date'].dt.to_period('M')
