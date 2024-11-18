@@ -83,10 +83,17 @@ fig = px.choropleth(
 )
 
 # Increase map size
+#fig.update_layout(
+#    width=800,  # Set the width of the map (in pixels)
+#    height=600,  # Set the height of the map (in pixels)
+#)
 fig.update_layout(
-    width=800,  # Set the width of the map (in pixels)
-    height=600,  # Set the height of the map (in pixels)
+    template="plotly_dark",
+    paper_bgcolor="rgb(0,0,0)",  # Black background for the plot
+    plot_bgcolor="rgb(0,0,0)",   # Ensure plot area also has the same background
+    font=dict(color="white")      # Set font color to white for contrast
 )
+
 # Streamlit App for Interactivity
 st.title('Interactive Senate Voting Trend (Yea vs. Nay) by State')
 
