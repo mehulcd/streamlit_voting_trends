@@ -73,7 +73,7 @@ fig = px.choropleth(
     color_continuous_scale='RdBu',
     #range_color=[-100, 100],
     hover_name='state',
-    template='plotly_dark',
+    #template='plotly_dark',
     #width=800,  # Set the width of the map (in pixels)
     hover_data={
         #'yea_votes': True,
@@ -125,7 +125,7 @@ fig_party_vote_share = px.choropleth(
     #color_continuous_scale='Blues',
     color_discrete_map={'red': 'red', 'blue': 'blue'},
     hover_name='state',
-    template='plotly_dark',
+    #template='plotly_dark',
     hover_data={
         'democrat_vote_share': True,
         'republican_vote_share': True
