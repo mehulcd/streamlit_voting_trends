@@ -73,7 +73,7 @@ fig = px.choropleth(
     color_continuous_scale='RdBu',
     #range_color=[-100, 100],
     hover_name='state',
-    #template='plotly_dark',
+    template='plotly_dark',
     #width=800,  # Set the width of the map (in pixels)
     hover_data={
         #'yea_votes': True,
@@ -83,15 +83,9 @@ fig = px.choropleth(
 )
 
 # Increase map size
-#fig.update_layout(
-#    width=800,  # Set the width of the map (in pixels)
-#    height=600,  # Set the height of the map (in pixels)
-#)
 fig.update_layout(
-    template="plotly_dark",
-    #paper_bgcolor="rgb(0,0,0)",  # Black background for the plot
-    #plot_bgcolor="rgb(0,0,0)",   # Ensure plot area also has the same background
-    font=dict(color="white")      # Set font color to white for contrast
+    width=800,  # Set the width of the map (in pixels)
+    height=600,  # Set the height of the map (in pixels)
 )
 
 # Streamlit App for Interactivity
