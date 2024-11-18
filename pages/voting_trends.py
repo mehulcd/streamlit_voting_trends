@@ -89,8 +89,8 @@ fig = px.choropleth(
 #)
 fig.update_layout(
     template="plotly_dark",
-    paper_bgcolor="rgb(0,0,0)",  # Black background for the plot
-    plot_bgcolor="rgb(0,0,0)",   # Ensure plot area also has the same background
+    #paper_bgcolor="rgb(0,0,0)",  # Black background for the plot
+    #plot_bgcolor="rgb(0,0,0)",   # Ensure plot area also has the same background
     font=dict(color="white")      # Set font color to white for contrast
 )
 
@@ -145,7 +145,7 @@ fig_party_vote_share.update_layout(
     width=800,  # Set the width of the map (in pixels)
     height=600,  # Set the height of the map (in pixels)
 )
-fig.show(debug=True)
+#fig.show(debug=True)
 
 # Display the choropleth map
 st.plotly_chart(fig_party_vote_share)
